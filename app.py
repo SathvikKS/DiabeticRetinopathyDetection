@@ -17,8 +17,8 @@ IMG_SIZE = 512
 def top_2_accuracy(in_gt, in_pred):
     return top_k_categorical_accuracy(in_gt, in_pred, k=2)
 
-retina_model = load_model('./model/DenseNet201_d3_512_1_model.h5', custom_objects={'top_2_accuracy': top_2_accuracy})
-graph = tf.get_default_graph()
+retina_model = load_model('./model/DenseNet201_d3_512_1_model_tensorFlow_2.h5', custom_objects={'top_2_accuracy': top_2_accuracy})
+graph = tf.compat.v1.get_default_graph()
 
 @app.route('/')
 def index():
@@ -30,17 +30,16 @@ def predict_image():
         message = request.get_json(force=True)
         encoded = message['image']
         decoded = base64.b64decode(encoded)
-        with graph.as_default(): 
-            image = Image.open(io.BytesIO(decoded))
-            np_image = np.array(image).astype('float32')/255
-            np_image = transform.resize(np_image, (IMG_SIZE, IMG_SIZE, 3))
-            img = np.expand_dims(np_image, axis=0)
-            preds = retina_model.predict(img)[0]
-            res = [(k, 100*v, '*'*int(10*v)) for k, v in sorted(enumerate(preds), key = lambda x: -1*x[1])]
-            del(img)
-            return jsonify({
-                'pres': res
-            })
+        image = Image.open(io.BytesIO(decoded))
+        np_image = np.array(image).astype('float32')/255
+        np_image = transform.resize(np_image, (IMG_SIZE, IMG_SIZE, 3))
+        img = np.expand_dims(np_image, axis=0)
+        preds = retina_model.predict(img)[0]
+        res = [(k, 100*v, '*'*int(10*v)) for k, v in sorted(enumerate(preds), key = lambda x: -1*x[1])]
+        del(img)
+        return jsonify({
+            'pres': res
+        })
     
 
 if __name__ == '__main__':
