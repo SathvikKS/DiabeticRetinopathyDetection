@@ -1,3 +1,4 @@
+let barChart;
 $(document).ready(function () {
     let base64Image;
     // Init
@@ -50,7 +51,7 @@ $(document).ready(function () {
             success: function (data) {
                 $('.loader').hide();
                 $("#imageUpload").prop('disabled', false);
-                data = ['NO_DR: 99.81', 'Moderate: 0.26', 'Mild: 0.04', 'Proliferate_DR: 0.04', 'Severe: 0.0'];
+                data = data.pres.map(item => `${item[0]}: ${item[1].toFixed(2)}`);
 
                 // Extract labels and values from the data
                 const labels = data.map(item => item.split(':')[0]);
@@ -59,8 +60,12 @@ $(document).ready(function () {
                 // Get the canvas element for the chart
                 const ctx = document.getElementById('pieChart').getContext('2d');
 
+                if (barChart) {
+                    barChart.destroy();
+                }
+                
                 // Create the bar chart
-                const barChart = new Chart(ctx, {
+                barChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: labels,
