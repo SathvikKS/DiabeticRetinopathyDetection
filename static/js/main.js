@@ -11,7 +11,7 @@ $(document).ready(function () {
             var reader = new FileReader();
             reader.onload = function (e) {
                 let dataURL = reader.result;
-                base64Image = dataURL.replace("data:image/jpeg;base64,","");
+                base64Image = dataURL.replace("data:image/jpeg;base64,", "");
                 $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
                 $('#imagePreview').hide();
                 $('#imagePreview').fadeIn(650);
@@ -48,19 +48,41 @@ $(document).ready(function () {
             processData: false,
             async: true,
             success: function (data) {
-                // Get and display the result
-                var res = []
-                data.pres.forEach(element => {
-                    res.push(`Predicted stage ${element[0]}: ${element[1].toFixed(2)} % (${element[2]})`)
-                });
                 $('.loader').hide();
                 $("#imageUpload").prop('disabled', false);
-                $('#result').fadeIn(600);
-                $('#result').html(' Result:  <br>' + res.join('<br>'));
-                console.log(res)
-                
-            },
-        });
-    });
+                data = ['NO_DR: 99.81', 'Moderate: 0.26', 'Mild: 0.04', 'Proliferate_DR: 0.04', 'Severe: 0.0'];
 
+                // Extract labels and values from the data
+                const labels = data.map(item => item.split(':')[0]);
+                const values = data.map(item => parseFloat(item.split(':')[1]));
+
+                // Get the canvas element for the chart
+                const ctx = document.getElementById('pieChart').getContext('2d');
+
+                // Create the bar chart
+                const barChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Disease Levels', // Add a label for the dataset
+                            data: values,
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+
+                });
+
+            },
+        })
+    })
 });

@@ -2,9 +2,10 @@
 
 <h2>Diabetic Retinopathy Detection</h2>
 
-<div>
+<div id="mainContainer" style="display: flex;">
     
-    
+    <div>
+
     <label for="imageUpload" class="upload-label">
         Choose...
     </label>
@@ -20,12 +21,10 @@
             <button type="button" class="btn btn-primary btn-lg " id="btn-predict">Predict!</button>
         </div>
     </div>
+    </div>
 
     <div class="loader" style="display:none;"></div>
-
-    <h3 id="result">
-        <span> </span>
-    </h3>
-
+    <canvas id="pieChart"></canvas>
 </div>
+
 {% endblock %}
