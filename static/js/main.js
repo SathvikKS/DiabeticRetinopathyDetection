@@ -4,7 +4,6 @@ $(document).ready(function () {
     // Init
     $('.image-section').hide();
     $('.loader').hide();
-    $('#result').hide();
 
     // Upload Preview
     function readURL(input) {
@@ -25,14 +24,11 @@ $(document).ready(function () {
     $("#imageUpload").change(function () {
         $('.image-section').show();
         $('#btn-predict').show();
-        $('#result').text('');
-        $('#result').hide();
         readURL(this);
     });
 
     // Predict
     $('#btn-predict').click(async function () {
-        var form_data = new FormData($('#upload-file')[0]);
         let message = {
             image: base64Image
         }
@@ -58,7 +54,7 @@ $(document).ready(function () {
                 const values = data.map(item => parseFloat(item.split(':')[1]));
 
                 // Get the canvas element for the chart
-                const ctx = document.getElementById('pieChart').getContext('2d');
+                const ctx = document.getElementById('barChart').getContext('2d');
 
                 if (barChart) {
                     barChart.destroy();
